@@ -1,0 +1,21 @@
+# Netlify solo aloja la página (HTML, CSS y JavaScript). El análisis lo hace el backend Java, que corre
+# en un contenedor en otro servicio (ver docs/despliegue.md). Netlify reenvía /api/* a ese backend,
+# así que el navegador ve un único origen y no hace falta configurar CORS.
+
+[build]
+  # No hay paso de compilación: se publica la carpeta estática tal cual.
+  publish = "src/main/resources/static"
+
+[[redirects]]
+  from = "/api/*"
+  # CAMBIAR por la URL pública del backend, sin barra final y sin /api.
+  to = "https://CAMBIAR-POR-LA-URL-DEL-BACKEND/api/:splat"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "same-origin"

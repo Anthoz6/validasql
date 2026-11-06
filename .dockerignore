@@ -1,0 +1,12 @@
+target/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+.DS_Store
+docs/
+README.md
+Dockerfile
+docker-compose.yml
+netlify.toml

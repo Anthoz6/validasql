@@ -17,17 +17,33 @@
     <section class="entradas" aria-label="Entradas">
         <div class="editor">
             <label for="esquema">1. Esquema <span class="ayuda">sentencias CREATE TABLE</span></label>
-            <textarea id="esquema" rows="9" spellcheck="false" autocomplete="off"
-                      placeholder="CREATE TABLE estudiante (id INT PRIMARY KEY, nombre VARCHAR(60) NOT NULL);"></textarea>
+            <div class="caja-editor">
+                <pre class="resaltado" aria-hidden="true"></pre>
+                <textarea id="esquema" rows="9" wrap="off" spellcheck="false" autocomplete="off"
+                          placeholder="CREATE TABLE estudiante (id INT PRIMARY KEY, nombre VARCHAR(60) NOT NULL);"></textarea>
+            </div>
             <p class="posicion" id="posicion-esquema" aria-live="off">Línea 1, columna 1</p>
         </div>
 
         <div class="editor">
             <label for="consultas">2. Consultas <span class="ayuda">una o varias sentencias</span></label>
-            <textarea id="consultas" rows="12" spellcheck="false" autocomplete="off"
-                      placeholder="SELECT nombre FROM estudiante WHERE semestre >= 4;"></textarea>
+            <div class="caja-editor">
+                <pre class="resaltado" aria-hidden="true"></pre>
+                <textarea id="consultas" rows="12" wrap="off" spellcheck="false" autocomplete="off"
+                          placeholder="SELECT nombre FROM estudiante WHERE semestre >= 4;"></textarea>
+            </div>
             <p class="posicion" id="posicion-consultas" aria-live="off">Línea 1, columna 1</p>
         </div>
+
+        <p class="leyenda" aria-label="Significado de los colores">
+            <span class="t-palabra">palabra reservada</span>
+            <span>identificador</span>
+            <span class="t-numero">número</span>
+            <span class="t-cadena">cadena</span>
+            <span class="t-signo">símbolo</span>
+            <span class="t-literal">NULL, TRUE, FALSE</span>
+            <span class="t-invalido">no válido</span>
+        </p>
 
         <p class="nota">Cada editor cuenta sus líneas desde 1. Ctrl + Enter analiza.</p>
 

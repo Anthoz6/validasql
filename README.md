@@ -25,7 +25,7 @@ anexo son pruebas automáticas y dan exactamente la misma salida: código, líne
 
 Todos los comandos se ejecutan dentro de la carpeta `validasql/`.
 
-**Pruebas** (126 pruebas, incluidos los 8 ejemplos del anexo y los 10 casos nuevos):
+**Pruebas** (127 pruebas, incluidos los 8 ejemplos del anexo y los 10 casos nuevos):
 
 ```bash
 ./mvnw test
@@ -51,6 +51,16 @@ Las opciones `--tokens`, `--arbol` y `--traza` muestran lo que produjo cada fase
 
 ```bash
 ./mvnw -q exec:java -Dexec.args="--tokens --arbol --traza src/main/resources/ejemplos/universidad.sql src/main/resources/ejemplos/consultas.sql"
+```
+
+## Despliegue
+
+El `Dockerfile` empaqueta el backend (API y página) en un contenedor, y `netlify.toml` publica la página
+en Netlify reenviando `/api/*` al backend. Netlify no ejecuta Java, así que el contenedor va en otro
+servicio. Los pasos están en [`docs/despliegue.md`](docs/despliegue.md).
+
+```bash
+docker compose up --build
 ```
 
 ## Estructura
@@ -113,4 +123,5 @@ sentencia y sigue con la siguiente).
 
 - [`docs/evidencias-clase4.md`](docs/evidencias-clase4.md): ejecución real de los casos de la clase 4.
 - [`docs/tabla-casos.md`](docs/tabla-casos.md): tabla de casos y resultados.
+- [`docs/despliegue.md`](docs/despliegue.md): contenedor y Netlify.
 - [`docs/pendientes.md`](docs/pendientes.md): errores conocidos, limitaciones y tareas pendientes.

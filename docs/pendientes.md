@@ -5,7 +5,7 @@ Estado al 6 de noviembre de 2026, antes de la entrega de la clase 4.
 ## Estado actual
 
 El núcleo está completo: léxico, segmentador, parser LL(1) con traza, árbol, analizador semántico con
-tabla de símbolos, servicio, consola, API REST y página web. Pasan las 126 pruebas, entre ellas los 8
+tabla de símbolos, servicio, consola, API REST y página web. Pasan las 127 pruebas, entre ellas los 8
 ejemplos del anexo y los 10 casos nuevos del diseño. Es más de lo que pedía la clase 4 (solo el recorrido
 de `CREATE TABLE` y `SELECT`); lo demás ya se puede usar y probar.
 
@@ -63,6 +63,8 @@ los 8 ejemplos ni de los 10 casos nuevos, pero conviene que queden escritas en e
 - **JOIN de una tabla consigo misma.** No hay alias, así que una columna de esa tabla se reporta como
   ambigua entre «t» y «t».
 - **Columnas con emoji.** Un carácter fuera del plano básico cuenta como dos columnas.
+- **El resaltado de colores es solo presentación.** La página usa su propia lista de las 32 palabras
+  reservadas para colorear mientras se escribe. `PaginaWebTest` comprueba que coincida con `TipoToken`.
 - **La página no guarda nada.** El esquema y las consultas se pierden al recargar. No hay base de datos ni
   ejecución real de las sentencias, por alcance.
 - **Sin números negativos ni comentarios SQL**, por alcance. `-1` da L01 y un comentario da L01.

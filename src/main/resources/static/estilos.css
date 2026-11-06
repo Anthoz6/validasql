@@ -7,6 +7,13 @@
     --borde: #111111;
     --borde-suave: #c8c8c8;
     --panel: #f4f4f4;
+    /* colores del resaltado de sintaxis (todos con contraste suficiente sobre el fondo) */
+    --c-palabra: #0b57d0;
+    --c-literal: #7b3fa0;
+    --c-numero: #0f7b3d;
+    --c-cadena: #b3412b;
+    --c-signo: #9a5b00;
+    --c-invalido: #c5221f;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -19,6 +26,12 @@
         --borde: #f2f2f2;
         --borde-suave: #444444;
         --panel: #1d1d1d;
+        --c-palabra: #8ab4f8;
+        --c-literal: #d0a9f5;
+        --c-numero: #7fd49a;
+        --c-cadena: #f0a58f;
+        --c-signo: #ffc266;
+        --c-invalido: #ff8a80;
     }
 }
 
@@ -58,17 +71,48 @@ body {
 .editor label { display: block; font-weight: 600; margin-bottom: 6px; }
 .ayuda { font-weight: 400; color: var(--suave); font-size: 14px; }
 
-textarea {
-    width: 100%;
+/* Editor con resaltado: la capa coloreada va debajo y el área de texto, transparente, encima. */
+.caja-editor { position: relative; background: var(--fondo); border-radius: 4px; }
+
+textarea, .resaltado {
     font: 14px/1.5 var(--mono);
-    color: var(--texto);
-    background: var(--fondo);
     border: 1.5px solid var(--borde);
     border-radius: 4px;
     padding: 10px;
-    resize: vertical;
     tab-size: 4;
+    white-space: pre;
 }
+
+textarea {
+    position: relative;
+    display: block;
+    width: 100%;
+    color: transparent;
+    caret-color: var(--texto);
+    background: transparent;
+    resize: vertical;
+    overflow: auto;
+}
+textarea::placeholder { color: var(--suave); }
+
+.resaltado {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: hidden;
+    border-color: transparent;
+    color: var(--texto);
+    pointer-events: none;
+}
+
+.t-palabra { color: var(--c-palabra); font-weight: 700; }
+.t-literal { color: var(--c-literal); font-weight: 700; }
+.t-numero { color: var(--c-numero); }
+.t-cadena { color: var(--c-cadena); }
+.t-signo { color: var(--c-signo); font-weight: 600; }
+.t-invalido { color: var(--c-invalido); text-decoration: underline wavy; text-underline-offset: 3px; }
+
+.leyenda { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 8px; font: 13px var(--mono); }
 
 textarea:focus-visible, button:focus-visible, [role="tab"]:focus-visible, .posicion-diag:focus-visible {
     outline: 3px solid var(--texto);

@@ -18,6 +18,72 @@ const contenedorResultados = document.getElementById("resultados");
 
 let contadorTarjetas = 0;
 
+// ------------------------------------------------------------------ resaltado de sintaxis
+// Solo es presentación: colorea el texto como un cliente de base de datos. El análisis real lo hace
+// el servidor. La lista debe ser igual a las 32 palabras reservadas de TipoToken (PaginaWebTest lo comprueba).
+const PALABRAS_RESERVADAS = new Set([
+    "CREATE", "TABLE", "PRIMARY", "KEY", "NOT", "NULL",
+    "INT", "DECIMAL", "VARCHAR", "DATE", "BOOLEAN",
+    "SELECT", "FROM", "INNER", "JOIN", "ON", "WHERE", "ORDER", "BY", "ASC", "DESC",
+    "INSERT", "INTO", "VALUES",
+    "UPDATE", "SET", "DELETE",
+    "AND", "OR", "IS",
+    "TRUE", "FALSE",
+]);
+const LITERALES_RESERVADOS = new Set(["NULL", "TRUE", "FALSE"]);
+
+// Grupos, en orden: cadena, decimal incompleto, número, palabra, operador, signo, espacio, otro carácter.
+const PATRON_LEXICO = /('[^'\r\n]*'?)|(\d+\.(?!\d))|(\d+(?:\.\d+)?)|([A-Za-z_][A-Za-z0-9_]*)|(<=|>=|<>|[=<>])|([,;().*])|(\s+)|([\s\S])/g;
+
+/** Clase CSS de un lexema según el grupo que reconoció; null si va sin color. */
+function claseDeLexema(m) {
+    if (m[1] !== undefined) return m[1].length > 1 && m[1].endsWith("'") ? "t-cadena" : "t-invalido";
+    if (m[2] !== undefined) return "t-invalido";
+    if (m[3] !== undefined) return "t-numero";
+    if (m[4] !== undefined) {
+        const palabra = m[4].toUpperCase();
+        if (LITERALES_RESERVADOS.has(palabra)) return "t-literal";
+        return PALABRAS_RESERVADAS.has(palabra) ? "t-palabra" : null;
+    }
+    if (m[5] !== undefined || m[6] !== undefined) return "t-signo";
+    if (m[7] !== undefined) return null;
+    return "t-invalido";                      // un carácter fuera del alfabeto (L01)
+}
+
+/** Clase CSS de un tipo de token que ya viene analizado desde la API. */
+function claseDeTipo(tipo) {
+    if (tipo === "IDENT") return "";
+    if (tipo === "NUM_ENT" || tipo === "NUM_DEC") return "t-numero";
+    if (tipo === "CADENA") return "t-cadena";
+    if (LITERALES_RESERVADOS.has(tipo)) return "t-literal";
+    return PALABRAS_RESERVADAS.has(tipo) ? "t-palabra" : "t-signo";
+}
+
+/** Convierte el SQL en spans de colores. Usa nodos de texto, así que nunca se interpreta como HTML. */
+function resaltar(texto) {
+    const fragmento = document.createDocumentFragment();
+    for (const m of texto.matchAll(PATRON_LEXICO)) {
+        const clase = claseDeLexema(m);
+        fragmento.append(clase ? el("span", { clase }, m[0]) : document.createTextNode(m[0]));
+    }
+    return fragmento;
+}
+
+/**
+ * El área de texto es transparente y encima de una capa con el mismo texto coloreado. Las dos
+ * comparten fuente, relleno y desplazamiento, sin ajuste de línea, para que coincidan carácter por carácter.
+ */
+function activarResaltado(entrada) {
+    const capa = entrada.parentElement.querySelector(".resaltado");
+    const pintar = () => capa.replaceChildren(resaltar(entrada.value), document.createTextNode("\n"));
+    entrada.addEventListener("input", pintar);
+    entrada.addEventListener("scroll", () => {
+        capa.scrollTop = entrada.scrollTop;
+        capa.scrollLeft = entrada.scrollLeft;
+    });
+    pintar();
+}
+
 /** Crea un elemento con atributos y contenido: el texto se agrega siempre como texto plano. */
 function el(etiqueta, atributos = {}, ...hijos) {
     const nodo = document.createElement(etiqueta);
@@ -95,7 +161,7 @@ function dibujarTokens(sentencia) {
             el("th", { clase: "num" }, "N°"), el("th", {}, "Token"), el("th", {}, "Lexema"),
             el("th", { clase: "num" }, "Línea"), el("th", { clase: "num" }, "Columna"))),
         el("tbody", {}, sentencia.tokens.map((t, i) => el("tr", {},
-            el("td", { clase: "num" }, i + 1), el("td", { clase: "mono" }, t.tipo),
+            el("td", { clase: "num" }, i + 1), el("td", { clase: `mono ${claseDeTipo(t.tipo)}` }, t.tipo),
             el("td", { clase: "mono" }, t.lexema),
             el("td", { clase: "num" }, t.linea), el("td", { clase: "num" }, t.columna)))));
 }
@@ -169,7 +235,7 @@ function dibujarTarjeta(sentencia, etiqueta, entradaOrigen) {
             el("h3", {}, `${etiqueta} ${sentencia.numero}`),
             el("span", { clase: "linea" }, `línea ${sentencia.linea}`),
             el("span", { clase: `insignia-estado ${sentencia.estado}` }, ETIQUETAS_ESTADO[sentencia.estado])),
-        el("pre", { clase: "sentencia-texto" }, sentencia.texto),
+        el("pre", { clase: "sentencia-texto" }, resaltar(sentencia.texto)),
         lista,
         nodosPanel);
 }
@@ -238,6 +304,7 @@ async function cargarEjemplo() {
         const ejemplo = await respuesta.json();
         entradaEsquema.value = ejemplo.esquema;
         entradaConsultas.value = ejemplo.consultas;
+        for (const entrada of [entradaEsquema, entradaConsultas]) entrada.dispatchEvent(new Event("input"));
         await analizar();
     } catch (error) {
         mostrarEstado(`No se pudo cargar el ejemplo: ${error.message}`, true);
@@ -247,6 +314,7 @@ async function cargarEjemplo() {
 function limpiar() {
     entradaEsquema.value = "";
     entradaConsultas.value = "";
+    for (const entrada of [entradaEsquema, entradaConsultas]) entrada.dispatchEvent(new Event("input"));
     contenedorResumen.hidden = true;
     contenedorResultados.replaceChildren();
     mostrarEstado("Escribe un esquema y unas consultas, o carga el ejemplo, y pulsa Analizar.");
@@ -264,5 +332,7 @@ for (const entrada of [entradaEsquema, entradaConsultas]) {
         }
     });
 }
+activarResaltado(entradaEsquema);
+activarResaltado(entradaConsultas);
 vincularPosicion(entradaEsquema, "posicion-esquema");
 vincularPosicion(entradaConsultas, "posicion-consultas");

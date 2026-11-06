@@ -2,7 +2,7 @@
 
 Casos válidos, inválidos y límite que se ejecutaron contra ValidaSQL. Cada fila es una prueba automática
 que compara la salida completa (código, línea, columna y mensaje), así que la columna «Resultado» dice
-si lo obtenido coincide con lo esperado. Última ejecución: `./mvnw test`, **126 pruebas, 0 fallos**.
+si lo obtenido coincide con lo esperado. Última ejecución: `./mvnw test`, **127 pruebas, 0 fallos**.
 
 Salvo que se indique otro esquema, todos usan el esquema común del anexo (`programa` y `estudiante`).
 Las posiciones se cuentan desde 1.

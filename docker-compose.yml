@@ -1,0 +1,8 @@
+# Levanta ValidaSQL en local con un contenedor:  docker compose up --build
+# Después abre http://localhost:8080
+services:
+  validasql:
+    build: .
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
