@@ -1,0 +1,207 @@
+/* ValidaSQL: interfaz en blanco y negro, como el boceto del documento de diseño. */
+
+:root {
+    --fondo: #ffffff;
+    --texto: #111111;
+    --suave: #555555;
+    --borde: #111111;
+    --borde-suave: #c8c8c8;
+    --panel: #f4f4f4;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --fondo: #111111;
+        --texto: #f2f2f2;
+        --suave: #b0b0b0;
+        --borde: #f2f2f2;
+        --borde-suave: #444444;
+        --panel: #1d1d1d;
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font: 16px/1.5 var(--sans);
+}
+
+.encabezado { padding: 24px 16px 8px; max-width: 1280px; margin: 0 auto; }
+.encabezado h1 { margin: 0; font-size: 28px; letter-spacing: 0.5px; }
+.encabezado p { margin: 4px 0 0; color: var(--suave); }
+
+.contenido {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: minmax(280px, 5fr) minmax(0, 7fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* Sin min-width: 0 una columna de grid no baja del ancho de su contenido y la página se ensancha. */
+.contenido > * { min-width: 0; }
+
+@media (max-width: 860px) {
+    .contenido { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------------------------------------ entradas */
+
+.editor { margin-bottom: 16px; }
+.editor label { display: block; font-weight: 600; margin-bottom: 6px; }
+.ayuda { font-weight: 400; color: var(--suave); font-size: 14px; }
+
+textarea {
+    width: 100%;
+    font: 14px/1.5 var(--mono);
+    color: var(--texto);
+    background: var(--fondo);
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    padding: 10px;
+    resize: vertical;
+    tab-size: 4;
+}
+
+textarea:focus-visible, button:focus-visible, [role="tab"]:focus-visible, .posicion-diag:focus-visible {
+    outline: 3px solid var(--texto);
+    outline-offset: 2px;
+}
+
+.posicion { margin: 4px 0 0; font-size: 13px; color: var(--suave); font-family: var(--mono); }
+.nota { margin: 0 0 12px; font-size: 14px; color: var(--suave); }
+
+.acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+
+button {
+    font: inherit;
+    padding: 8px 16px;
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    background: var(--fondo);
+    color: var(--texto);
+    cursor: pointer;
+}
+button:hover { background: var(--panel); }
+button.principal { background: var(--texto); color: var(--fondo); font-weight: 600; }
+button.principal:hover { opacity: 0.85; }
+button:disabled { opacity: 0.5; cursor: progress; }
+
+/* ------------------------------------------------------------ salida */
+
+.estado { padding: 12px 14px; border: 1.5px dashed var(--borde-suave); border-radius: 4px; color: var(--suave); }
+.estado.error { border: 1.5px solid var(--borde); color: var(--texto); font-weight: 600; }
+
+.resumen { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.resumen span {
+    border: 1.5px solid var(--borde);
+    border-radius: 999px;
+    padding: 2px 12px;
+    font-size: 14px;
+}
+.resumen strong { font-variant-numeric: tabular-nums; }
+
+.titulo-seccion { margin: 20px 0 8px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: var(--suave); }
+
+.tarjeta {
+    border: 1.5px solid var(--borde);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.tarjeta-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    background: var(--panel);
+    border-bottom: 1.5px solid var(--borde);
+}
+.tarjeta-cabecera h3 { margin: 0; font-size: 16px; }
+.tarjeta-cabecera .linea { color: var(--suave); font-size: 14px; }
+
+.insignia-estado {
+    margin-left: auto;
+    border: 1.5px solid var(--borde);
+    border-radius: 999px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.insignia-estado.CON_ERRORES { background: var(--texto); color: var(--fondo); }
+.insignia-estado.CON_ADVERTENCIAS { border-style: dashed; }
+
+.sentencia-texto {
+    margin: 0;
+    padding: 10px 14px;
+    font: 14px/1.5 var(--mono);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.pestanas { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--borde-suave); padding: 0 8px; }
+[role="tab"] {
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: none;
+    padding: 8px 12px;
+    color: var(--suave);
+}
+[role="tab"][aria-selected="true"] { color: var(--texto); font-weight: 600; border-bottom-color: var(--texto); }
+
+[role="tabpanel"] { padding: 12px 14px; overflow-x: auto; }
+[role="tabpanel"][hidden] { display: none; }
+
+.vacio { margin: 0; color: var(--suave); }
+
+/* ------------------------------------------------------------ diagnósticos */
+
+.diagnosticos { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.diagnostico { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 10px; align-items: baseline; }
+
+.codigo {
+    font: 600 13px/1.6 var(--mono);
+    padding: 0 8px;
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    text-align: center;
+}
+.codigo.error { background: var(--texto); color: var(--fondo); }
+.codigo.advertencia { background: var(--fondo); color: var(--texto); border-style: dashed; }
+
+.posicion-diag {
+    font: 13px var(--mono);
+    color: var(--suave);
+    background: none;
+    border: 0;
+    padding: 0;
+    text-decoration: underline dotted;
+    cursor: pointer;
+}
+.mensaje { overflow-wrap: anywhere; }
+.valida { margin: 0; font-weight: 600; }
+
+/* ------------------------------------------------------------ tablas y árbol */
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 4px 10px; border-bottom: 1px solid var(--borde-suave); white-space: nowrap; }
+th { font-weight: 600; border-bottom: 1.5px solid var(--borde); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.mono, pre.arbol { font-family: var(--mono); }
+pre.arbol { margin: 0; font-size: 14px; line-height: 1.45; }
+
+.motivo { font: 12px var(--mono); }
+.motivo.DESCARTE { font-weight: 700; text-decoration: underline; }
+
+.pie { max-width: 1280px; margin: 0 auto; padding: 8px 16px 32px; color: var(--suave); font-size: 13px; }
