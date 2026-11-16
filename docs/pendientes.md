@@ -1,31 +1,38 @@
 # Registro de pendientes
 
-Estado al 6 de noviembre de 2026, antes de la entrega de la clase 4.
+Estado al 16 de noviembre de 2026, para la entrega de la clase 5.
 
 ## Estado actual
 
 El núcleo está completo: léxico, segmentador, parser LL(1) con traza, árbol, analizador semántico con
 tabla de símbolos, servicio, consola, API REST y página web. Pasan las 127 pruebas, entre ellas los 8
-ejemplos del anexo y los 10 casos nuevos del diseño. Es más de lo que pedía la clase 4 (solo el recorrido
-de `CREATE TABLE` y `SELECT`); lo demás ya se puede usar y probar.
+ejemplos del anexo y los 10 casos nuevos del diseño, con la salida exacta.
+
+El repositorio está en GitHub (`Anthoz6/validasql`). Los entregables de la clase 4 (README, evidencias y este
+registro) y los de la clase 5 (versión candidata, informe técnico final, tabla de casos y borrador de
+diapositivas) están hechos. Quedan las tareas de la tabla marcadas como pendientes, que son de revisión y de
+preparación de la sustentación.
 
 ## Tareas pendientes
 
-| # | Tarea | Para cuándo | Responsable |
-|---|---|---|---|
-| 1 | Crear el repositorio remoto y subir el proyecto (esta carpeta aún no es un repositorio Git) | Clase 4 | Juan José |
-| 2 | Confirmar con la docente que el subconjunto de SQL coincide con lo que ve el grupo en Bases de Datos | Clase 4 | Grupo |
-| 3 | Confirmar el reparto de responsables propuesto en el documento de diseño | Clase 4 | Grupo |
-| 4 | Cada integrante lee su módulo y practica explicarlo (la defensa es individual) | Antes de la defensa | Todos |
-| 5 | Informe técnico final en Word y PDF, con la portada y el estilo de la propuesta | Clase 5 | Grupo |
-| 6 | Borrador de diapositivas con el guion de la sustentación | Clase 5 | Grupo |
-| 7 | Actualizar el anexo y el diseño con las decisiones de implementación de la sección siguiente | Clase 5 | Grupo |
-| 8 | Ensayo de la defensa con preguntas técnicas cruzadas entre integrantes | Después de la clase 5 | Todos |
+| # | Tarea | Para cuándo | Responsable | Estado |
+|---|---|---|---|---|
+| 1 | Crear el repositorio remoto y subir el proyecto | Clase 4 | Juan José | Hecha |
+| 2 | Confirmar con la docente que el subconjunto de SQL coincide con lo que ve el grupo en Bases de Datos | Clase 4 | Grupo | Pendiente |
+| 3 | Confirmar el reparto de responsables propuesto en el documento de diseño | Clase 4 | Grupo | Pendiente |
+| 4 | Cada integrante lee su módulo y practica explicarlo (la defensa es individual) | Antes de la defensa | Todos | Pendiente |
+| 5 | Informe técnico final en Word y PDF, con la portada y el estilo de la propuesta | Clase 5 | Grupo | Hecha |
+| 6 | Borrador de diapositivas con el guion de la sustentación | Clase 5 | Grupo | Hecha |
+| 7 | Tabla de casos y resultados (`docs/tabla-casos.md` y su versión en Word y PDF) | Clase 5 | Grupo | Hecha |
+| 8 | Dar acceso a la docente al repositorio, que es privado | Clase 5 | Grupo | Por confirmar |
+| 9 | Actualizar el anexo y el diseño con las decisiones de implementación de la sección siguiente | Después de la clase 5 | Grupo | Pendiente |
+| 10 | Ensayo de la defensa con preguntas técnicas cruzadas entre integrantes | Después de la clase 5 | Todos | Pendiente |
+| 11 | Desplegar el backend y la página para mostrarlos en línea, según `docs/despliegue.md` (opcional) | Antes de la sustentación | Juan José | Pendiente |
 
 ## Decisiones de implementación que los documentos no definían
 
 Al programar hubo que decidir cosas que el anexo y el diseño no especificaban. Ninguna cambia la salida de
-los 8 ejemplos ni de los 10 casos nuevos, pero conviene que queden escritas en el informe final.
+los 8 ejemplos ni de los 10 casos nuevos, y ya están escritas en el informe final (sección 9).
 
 1. **Mensajes con variantes.** Un mismo código puede tener más de una redacción: L01 (con y sin tildes),
    M02 (una tabla o varias en un JOIN), M05 (comparación, asignación, longitud y fecha), M06 (con y sin
@@ -51,6 +58,11 @@ los 8 ejemplos ni de los 10 casos nuevos, pero conviene que queden escritas en e
 10. **Consola con opciones.** `--tokens`, `--arbol` y `--traza` muestran lo que produjo cada fase.
 11. **Dibujo del árbol.** El anexo solo muestra el de un `SELECT` simple. Para `CREATE TABLE`, `INSERT`,
     `UPDATE`, `DELETE`, `JOIN` y `ORDER BY` se siguió el mismo estilo.
+12. **Diferencias con los diagramas del diseño.** `Orden` guarda `Token direccion` y no un `boolean`;
+    `Actualizacion` y `Eliminacion` guardan `update` y `delete`; `ResultadoSentencia` no tiene `origen`;
+    `ResultadoAnalisis` guarda `nombresTablas`; `Diagnostico` no tiene `comoTexto()` (el formato lo da
+    `FormateadorReporte`); la primera pestaña de la web se llama «Resultado». El informe las explica en la
+    sección 9.
 
 ## Limitaciones conocidas
 
@@ -76,8 +88,8 @@ los 8 ejemplos ni de los 10 casos nuevos, pero conviene que queden escritas en e
 
 ## Errores corregidos durante el desarrollo
 
-- Los 14 primeros fallos de las pruebas nuevas eran columnas mal contadas a mano en las expectativas, salvo
-  uno real: un `INSERT` con un nombre de columna mal escrito informaba además M07 en cascada (punto 4 de
+- De los 14 primeros fallos de las pruebas nuevas, 13 eran errores nuestros al escribir lo esperado
+  (columnas mal contadas a mano, el orden de los tokens esperados y el nombre de un conjunto) y uno era real: un `INSERT` con un nombre de columna mal escrito informaba además M07 en cascada (punto 4 de
   arriba). Ya está corregido y tiene prueba.
 - En pantallas angostas la página se ensanchaba más que la ventana por una columna de grid sin
   `min-width: 0`. Corregido.
